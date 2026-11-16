@@ -1,11 +1,16 @@
 #include <iostream>
-
+#include <cassert>
 
 // Declrations
 
-bool update_safe_mode(bool current_mode, double temperature_c, bool reset_requested);
+#include "safe_mode.cpp"
+
+void test_update_safe_mode();
+
 
 int main() {
+    test_update_safe_mode();
+
     const double readings[] = {25.0, 65.0, 55.0, 40.0, 40.0};
     const bool reset_requested[] = {false, false, true, false, true};
 
@@ -20,14 +25,11 @@ int main() {
     return 0;
 }
 
-bool update_safe_mode(bool current_mode, double temperature_c, bool reset_requested) {
-    if (temperature_c >= 60.0) {
-        return true;
-    }
-
-    if (temperature_c <= 50.0 && reset_requested) {
-        return false;
-    }
-    
-    return current_mode;
+void test_update_safe_mode() {
+    assert(update_safe_mode(false, 65.0, false));
+    assert(update_safe_mode(true, 50.0, true));
+    assert(!update_safe_mode(true, 49.0, true));
+    assert(update_safe_mode(true, 40.0, false));
+    assert(update_safe_mode(false, 60.0, true));
 }
+
